@@ -1,0 +1,33 @@
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.8);
+  z-index: 1200;
+}
+
+.modal {
+  position: relative;
+  max-width: calc(100vw - 48px);
+  max-height: calc(100vh - 24px);
+}
+
+.button {
+  position: absolute;
+  right: 0;
+  top: 0;
+  border: none;
+  background-color: rgb(114, 116, 112);
+  color: rgb(166, 170, 204);
+  cursor: pointer;
+}
+
+.button:hover,
+.button:focus {
+  color: rgb(203, 90, 14);
+}
