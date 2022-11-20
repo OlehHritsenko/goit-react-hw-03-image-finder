@@ -3,7 +3,7 @@ import css from './ImageGalleryItem.module.css';
 
 function ImageGalleryItem({ description, smallImage, largeImage, openModal }) {
   return (
-    <li className={css.item} onClick={openModal}>
+    <li className={css.item} onClick={() => openModal(largeImage, description)}>
       <img
         className={css.image}
         src={smallImage}
