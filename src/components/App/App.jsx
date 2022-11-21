@@ -17,7 +17,7 @@ class App extends Component {
     totalImages: 0,
     isLoading: false,
     showModal: false,
-    images: null,
+    images: [],
     error: null,
     currentImageUrl: null,
     currentImageDescription: null,
@@ -26,10 +26,10 @@ class App extends Component {
   componentDidUpdate(prevProps, prevState) {
     const { query, page } = this.state;
 
-    if (prevState.query !== query) {
+    if (prevState.query !== query || prevState.page !== page) {
       this.setState(({ isLoading }) => ({ isLoading: !isLoading }));
 
-      fetchImages(query)
+      fetchImages(query, this.state.page)
         .then(({ hits, totalHits }) => {
           const imagesArray = hits.map(hit => ({
             id: hit.id,
@@ -38,47 +38,22 @@ class App extends Component {
             largeImage: hit.largeImageURL,
           }));
 
-          return this.setState({
-            page: 1,
-            images: imagesArray,
-            imagesOnPage: imagesArray.length,
+          return this.setState(({ images, imagesOnPage }) => ({
+            images: [...images, ...imagesArray],
+            imagesOnPage: imagesOnPage + imagesArray.length,
             totalImages: totalHits,
-          });
-        })
-        .catch(error => this.setState({ error }))
-        .finally(() =>
-          this.setState(({ isLoading }) => ({ isLoading: !isLoading }))
-        );
-    }
-
-    if (prevState.page !== page && page !== 1) {
-      this.setState(({ isLoading }) => ({ isLoading: !isLoading }));
-
-      fetchImages(query, page)
-        .then(({ hits }) => {
-          const imagesArray = hits.map(hit => ({
-            id: hit.id,
-            description: hit.tags,
-            smallImage: hit.webformatURL,
-            largeImage: hit.largeImageURL,
+            isLoading: false,
           }));
-
-          return this.setState(({ images, imagesOnPage }) => {
-            return {
-              images: [...images, ...imagesArray],
-              imagesOnPage: imagesOnPage + imagesArray.length,
-            };
-          });
         })
         .catch(error => this.setState({ error }))
         .finally(() =>
-          this.setState(({ isLoading }) => ({ isLoading: !isLoading }))
+          this.setState(({ isLoading }) => ({ isLoading: false }))
         );
     }
   }
 
   getSearchRequest = query => {
-    this.setState({ query });
+    this.setState({ query: query, page: 1, images: [] });
   };
 
   onNextFetch = () => {
